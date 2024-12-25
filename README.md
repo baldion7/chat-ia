@@ -2,11 +2,12 @@
 
 Un asistente de código basado en IA que utiliza el modelo Qwen a través de la API de Hugging Face para proporcionar ayuda con programación en un formato de chat interactivo.
 
-![img.png](img.png)
+![image](https://github.com/user-attachments/assets/2fca9695-7b9f-47e4-9a34-49ea5a31ea87)
+
 
 ### URLs
 - **Local**: http://localhost:5173
-- **Producción**: https://chat-ai-assistant.vercel.app
+- **Producción**: [https://chat-ai-assistant.vercel.app](https://chat-ia-fawn.vercel.app/)
 
 ## 🚀 Características
 
