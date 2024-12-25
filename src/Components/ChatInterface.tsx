@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar.tsx"
 // @ts-ignore
 import { ScrollArea } from "./ui/ScrollAreatsx"
 // @ts-ignore
-import { Textarea } from "./ui/TextAreatsx"
+import { Textarea } from "./ui/TextArea.tsx"
 // @ts-ignore
 import { cn } from "../lib/utils.ts"
 
