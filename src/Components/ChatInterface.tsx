@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 // @ts-ignore
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar.tsx"
 // @ts-ignore
-import { ScrollArea } from "./ui/ScrollAreatsx"
+import { ScrollArea } from "./ui/ScrollArea.tsx"
 // @ts-ignore
 import { Textarea } from "./ui/TextArea.tsx"
 // @ts-ignore
