@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { HfInference } from "@huggingface/inference"
 import {  Send, Code, Copy, Check, RefreshCw, ThumbsUp, ThumbsDown } from 'lucide-react'
@@ -14,6 +13,7 @@ import { ScrollArea } from "./ui/ScrollArea.tsx"
 import { Textarea } from "./ui/TextArea.tsx"
 // @ts-ignore
 import { cn } from "../lib/utils.ts"
+
 
 interface Message {
     id: string
@@ -173,49 +173,50 @@ export const ChatInterface = () => {
     }
 
     return (
-        <Card className="w-full max-w-5xl mx-auto h-[100dvh] sm:h-auto flex flex-col">
-            <CardHeader className="px-4 py-3 sm:p-6">
+        <Card className="w-full max-w-6xl mx-auto">
+            <CardHeader>
                 <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                    <Avatar>
                         <AvatarImage src="/placeholder.svg" />
                         <AvatarFallback>AI</AvatarFallback>
                     </Avatar>
                     <div>
-                        <CardTitle className="text-lg sm:text-2xl">Tu asistente privado de código</CardTitle>
-                        <CardDescription className="text-xs sm:text-sm">Powered by Hugging Face Inference API</CardDescription>
+                        <CardTitle>Tu asistente privado de código con AI</CardTitle>
+                        <CardDescription>Powered by Hugging Face Inference API</CardDescription>
                     </div>
                 </div>
             </CardHeader>
-            <CardContent className="flex-1 p-2 sm:p-6 overflow-hidden">
-                <ScrollArea className="h-full pr-2 sm:pr-4">
+            <CardContent>
+                <ScrollArea className="h-[600px] pr-4">
                     <div className="space-y-4">
                         {messages.map((message) => (
                             <div
                                 key={message.id}
                                 className={cn(
-                                    "flex gap-2 sm:gap-3 w-full",
+                                    "flex gap-3 w-full",
                                     message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                                 )}
                             >
                                 {message.role === 'assistant' && (
-                                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                                    <Avatar className="flex-shrink-0">
                                         <AvatarImage src="/placeholder.svg" />
                                         <AvatarFallback>AI</AvatarFallback>
                                     </Avatar>
                                 )}
                                 {message.role === 'user' && (
-                                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                                    <Avatar className="flex-shrink-0">
                                         <AvatarFallback>TÚ</AvatarFallback>
                                     </Avatar>
                                 )}
                                 <div className={cn(
-                                    "flex flex-col gap-1 sm:gap-2",
+                                    "flex flex-col gap-2",
                                     message.role === 'user' ? 'items-end' : 'items-start',
-                                    "max-w-[85%] sm:max-w-[80%]"
+                                    "max-w-[80%]"
                                 )}>
                                     <div
+                                        style={{backgroundColor: 'hsl(240 4.8% 95.9%)'}}
                                         className={cn(
-                                            "rounded-lg px-3 py-2 sm:px-4 break-words text-sm sm:text-base",
+                                            "rounded-lg px-4 py-2 break-words",
                                             message.role === 'user'
                                                 ? 'bg-primary text-primary-foreground'
                                                 : 'bg-background border'
@@ -223,7 +224,7 @@ export const ChatInterface = () => {
                                     >
                                         {formatCode(message.content)}
                                     </div>
-                                    <div className="flex gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                                    <div className="flex gap-2 text-xs text-muted-foreground">
                                         <time>{formatTimestamp(message.timestamp)}</time>
                                         {message.role === 'assistant' && (
                                             <div className="flex gap-1">
@@ -243,12 +244,12 @@ export const ChatInterface = () => {
                             </div>
                         ))}
                         {isTyping && (
-                            <div className="flex gap-2 sm:gap-3">
-                                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                            <div className="flex gap-3">
+                                <Avatar>
                                     <AvatarImage src="/placeholder.svg" />
                                     <AvatarFallback>AI</AvatarFallback>
                                 </Avatar>
-                                <div className="bg-muted rounded-lg px-3 py-2 sm:px-4">
+                                <div className="bg-muted rounded-lg px-4 py-2">
                                     <div className="flex gap-1">
                                         <span className="animate-bounce">●</span>
                                         <span className="animate-bounce delay-100">●</span>
@@ -261,17 +262,17 @@ export const ChatInterface = () => {
                     </div>
                 </ScrollArea>
             </CardContent>
-            <CardFooter className="border-t p-2 sm:p-6">
+            <CardFooter className="border-t pt-6">
                 <form onSubmit={handleSubmit} className="flex gap-2 w-full">
                     <Textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder="¿Cómo puede ayudarte?"
-                        className="min-h-[45px] sm:min-h-[60px] text-sm sm:text-base"
+                        placeholder="¿Cómo puede ayudarte Qwen hoy?"
+                        className="min-h-[60px]"
                     />
-                    <Button type="submit" size="icon" className="h-[45px] w-[45px] sm:h-[60px] sm:w-[60px]" disabled={isTyping}>
-                        <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                        <span className="sr-only">Enviar mensaje</span>
+                    <Button type="submit" size="icon" className="h-[60px] w-[60px] bg-black" disabled={isTyping}>
+                        <Send className="h-5 w-5 " color={"white"}/>
+                        <span className="sr-only">Send message</span>
                     </Button>
                 </form>
             </CardFooter>
