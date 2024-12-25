@@ -2,11 +2,16 @@ import * as React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { HfInference } from "@huggingface/inference"
 import {  Send, Code, Copy, Check, RefreshCw, ThumbsUp, ThumbsDown } from 'lucide-react'
-import { Button } from "./ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { ScrollArea } from "./ui/ScrollArea"
-import { Textarea } from "./ui/textarea"
+// @ts-ignore
+import { Button } from "./ui/Button.tsx"
+// @ts-ignore
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./ui/Card.tsx"
+// @ts-ignore
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar.tsx"
+// @ts-ignore
+import { ScrollArea } from "./ui/ScrollAreatsx"
+// @ts-ignore
+import { Textarea } from "./ui/TextAreatsx"
 // @ts-ignore
 import { cn } from "../lib/utils.ts"
 
