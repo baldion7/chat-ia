@@ -42,6 +42,83 @@ export const ChatInterface = () => {
         scrollToBottom()
     }, [messages])
 
+    const formatText = (content: string) => {
+        if (!content.includes('#') && !content.includes('```')) return <p className="whitespace-pre-wrap">{content}</p>
+
+        const lines = content.split('\n')
+        let formattedContent: JSX.Element[] = []
+        let codeBlock: string[] = []
+        let inCodeBlock = false
+
+        lines.forEach((line, index) => {
+            // Manejo de bloques de código
+            if (line.startsWith('```')) {
+                if (inCodeBlock) {
+                    formattedContent.push(
+                        <div key={`code-${index}`} className="my-4">
+                            {formatCode(codeBlock.join('\n'))}
+                        </div>
+                    )
+                    codeBlock = []
+                }
+                inCodeBlock = !inCodeBlock
+                return
+            }
+
+            if (inCodeBlock) {
+                codeBlock.push(line)
+                return
+            }
+
+            // Manejo de títulos
+            if (line.startsWith('# ')) {
+                formattedContent.push(
+                    <h1 key={index} className="text-2xl font-bold mt-6 mb-4">
+                        {line.slice(2)}
+                    </h1>
+                )
+            } else if (line.startsWith('## ')) {
+                formattedContent.push(
+                    <h2 key={index} className="text-xl font-semibold mt-5 mb-3">
+                        {line.slice(3)}
+                    </h2>
+                )
+            } else if (line.startsWith('### ')) {
+                formattedContent.push(
+                    <h3 key={index} className="text-lg font-medium mt-4 mb-2">
+                        {line.slice(4)}
+                    </h3>
+                )
+            } else if (line.startsWith('- ')) {
+                // Manejo de listas
+                formattedContent.push(
+                    <ul key={index} className="list-disc list-inside my-2 ml-4">
+                        <li>{line.slice(2)}</li>
+                    </ul>
+                )
+            } else if (line.match(/^\d+\. /)) {
+                // Manejo de listas numeradas
+                formattedContent.push(
+                    <ol key={index} className="list-decimal list-inside my-2 ml-4">
+                        <li>{line.slice(line.indexOf(' ') + 1)}</li>
+                    </ol>
+                )
+            } else if (line.trim() === '') {
+                // Espaciado entre párrafos
+                formattedContent.push(<div key={index} className="h-4" />)
+            } else {
+                // Párrafos normales
+                formattedContent.push(
+                    <p key={index} className="my-2">
+                        {line}
+                    </p>
+                )
+            }
+        })
+
+        return <div className="space-y-2">{formattedContent}</div>
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!input.trim() || isTyping) return
@@ -124,52 +201,45 @@ export const ChatInterface = () => {
     }
 
     const formatCode = (content: string) => {
-        if (!content.includes('```')) return content
+        const [possibleLang, ...codeLines] = content.split('\n')
+        const code = possibleLang.match(/^[a-zA-Z]+$/) ? codeLines.join('\n') : content
+        const language = possibleLang.match(/^[a-zA-Z]+$/) ? possibleLang : 'code'
 
-        const parts = content.split('```')
-        return parts.map((part, i) => {
-            if (i % 2 === 0) return <p key={i} className="whitespace-pre-wrap mb-4">{part}</p>
-
-            const [possibleLang, ...codeLines] = part.split('\n')
-            const code = possibleLang.match(/^[a-zA-Z]+$/) ? codeLines.join('\n') : part
-            const language = possibleLang.match(/^[a-zA-Z]+$/) ? possibleLang : 'code'
-
-            return (
-                <div key={i} className="relative my-4 overflow-hidden">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-800 p-2 sm:px-4 rounded-t-lg">
-                        <div className="flex items-center gap-2 mb-2 sm:mb-0">
-                            <Code className="h-4 w-4 text-zinc-400" />
-                            <span className="text-xs font-medium text-zinc-400 uppercase">{language}</span>
-                        </div>
-                        <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => copyToClipboard(code, `code-${i}`)}
-                            className="h-8 px-3 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700/50 w-full sm:w-auto"
-                        >
-                            {copied === `code-${i}` ? (
-                                <>
-                                    <Check className="h-4 w-4 mr-2 text-green-500" />
-                                    <span className="text-xs">Copiado!</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Copy className="h-4 w-4 mr-2" />
-                                    <span className="text-xs">Copiar</span>
-                                </>
-                            )}
-                        </Button>
+        return (
+            <div className="relative my-4 overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-800 p-2 sm:px-4 rounded-t-lg">
+                    <div className="flex items-center gap-2 mb-2 sm:mb-0">
+                        <Code className="h-4 w-4 text-zinc-400" />
+                        <span className="text-xs font-medium text-zinc-400 uppercase">{language}</span>
                     </div>
-                    <div className="relative">
-                        <pre className="bg-zinc-900 p-2 sm:p-4 rounded-b-lg overflow-x-auto font-mono text-xs sm:text-sm leading-relaxed">
-                            <code className="text-zinc-100">
-                                {code}
-                            </code>
-                        </pre>
-                    </div>
+                    <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(code, `code-${Math.random()}`)}
+                        className="h-8 px-3 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700/50 w-full sm:w-auto"
+                    >
+                        {copied === `code-${code}` ? (
+                            <>
+                                <Check className="h-4 w-4 mr-2 text-green-500" />
+                                <span className="text-xs">Copiado!</span>
+                            </>
+                        ) : (
+                            <>
+                                <Copy className="h-4 w-4 mr-2" />
+                                <span className="text-xs">Copiar</span>
+                            </>
+                        )}
+                    </Button>
                 </div>
-            )
-        })
+                <div className="relative">
+                    <pre className="bg-zinc-900 p-2 sm:p-4 rounded-b-lg overflow-x-auto font-mono text-xs sm:text-sm leading-relaxed">
+                        <code className="text-zinc-100">
+                            {code}
+                        </code>
+                    </pre>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -222,20 +292,23 @@ export const ChatInterface = () => {
                                                 : 'bg-background border'
                                         )}
                                     >
-                                        {formatCode(message.content)}
+                                        {formatText(message.content)}
                                     </div>
                                     <div className="flex gap-2 text-xs text-muted-foreground">
                                         <time>{formatTimestamp(message.timestamp)}</time>
                                         {message.role === 'assistant' && (
                                             <div className="flex gap-1">
-                                                <Button variant="ghost" size="icon" className="h-4 w-4 hover:text-primary">
-                                                    <ThumbsUp className="h-3 w-3" />
+                                                <Button variant="ghost" size="icon"
+                                                        className="h-4 w-4 hover:text-primary">
+                                                    <ThumbsUp className="h-3 w-3"/>
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-4 w-4 hover:text-primary">
-                                                    <ThumbsDown className="h-3 w-3" />
+                                                <Button variant="ghost" size="icon"
+                                                        className="h-4 w-4 hover:text-primary">
+                                                    <ThumbsDown className="h-3 w-3"/>
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-4 w-4 hover:text-primary">
-                                                    <RefreshCw className="h-3 w-3" />
+                                                <Button variant="ghost" size="icon"
+                                                        className="h-4 w-4 hover:text-primary">
+                                                    <RefreshCw className="h-3 w-3"/>
                                                 </Button>
                                             </div>
                                         )}
@@ -246,7 +319,7 @@ export const ChatInterface = () => {
                         {isTyping && (
                             <div className="flex gap-3">
                                 <Avatar>
-                                    <AvatarImage src="/placeholder.svg" />
+                                    <AvatarImage src="/placeholder.svg"/>
                                     <AvatarFallback>AI</AvatarFallback>
                                 </Avatar>
                                 <div className="bg-muted rounded-lg px-4 py-2">
